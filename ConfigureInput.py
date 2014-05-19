@@ -85,13 +85,14 @@ for i in range(len(noteList)):
             noteList[i] = chromaticList[7 + noteList[i]]
 
 #make accidental dictionary for switching later
-tempDict = {'a#' : 'bb',
-          'c#' : 'db',
-          'd#' : 'eb',
-          'f#' : 'gb',
-          'g#' : 'ab'}
+tempDict = {
+    'a#': 'bb',
+    'c#': 'db',
+    'd#': 'eb',
+    'f#': 'gb',
+    'g#': 'ab'}
 
-invTempDict = {v:k for k, v in tempDict.items()}
+invTempDict = {v: k for k, v in tempDict.items()}
 accidentalDict = dict(tempDict)
 accidentalDict.update(invTempDict)
 
