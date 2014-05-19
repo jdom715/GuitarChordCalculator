@@ -11,19 +11,19 @@ __author__ = 'Julio'
 MAIN PROCESS:
 
 -Ask if instructions needed
-	Give instructions for input if yes
+    Give instructions for input if yes
 
 
 -Get and Configure input
 
-	-Put input in a list
+    -Put input in a list
 
-	-Lowercase everything
+    -Lowercase everything
 
-	-Analyze input for correct input
-    	Break if wrong, else continue
+    -Analyze input for correct input
+        Break if wrong, else continue
 
-	-Put notes in note list
+    -Put notes in note list
 
     -Remove x's
 
@@ -60,4 +60,5 @@ elif len(noteList) == 4:
 if bassNote == chordBass:
     print('\nYour chord is {0}!'.format(chordType))
 else:
-    print('\nYour chord is {0} with {1} in the bass.'.format(chordType, bassNote.upper()))
+    print('\nYour chord is {0} with {1} in the bass.'.format(
+        chordType, bassNote.upper()))
