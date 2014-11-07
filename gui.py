@@ -44,7 +44,7 @@ class MainPanel(wx.Panel):
         font = wx.Font(18, wx.SWISS, wx.NORMAL, wx.NORMAL)
         welcomeText.SetFont(font)
 
-        self.sizer.Add(welcomeText, 0, wx.ALIGN_CENTER | wx.TOP, 20)
+        self.sizer.Add(welcomeText, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 20)
 
         #ADD CHOICE BUTTONS
         self.buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -60,11 +60,11 @@ class MainPanel(wx.Panel):
 
         self.buttonSizer.AddMany([(self.notesButton, 0,
                                    wx.ALIGN_CENTER | wx.BOTTOM |
-                                   wx.RIGHT | wx.TOP, 10),
+                                   wx.RIGHT, 10),
 
                                   (self.fretsButton, 0,
                                    wx.ALIGN_RIGHT | wx.BOTTOM |
-                                   wx.RIGHT | wx.LEFT | wx.TOP, 10)])
+                                   wx.RIGHT | wx.LEFT, 10)])
 
         self.sizer.Add(self.buttonSizer, 0, wx.CENTER)
 
@@ -78,7 +78,7 @@ class MainPanel(wx.Panel):
             choices.append('{0}'.format(i))
 
         #E String
-        EStringChoiceList = ['e', 'f', 'f#', 'g', 'g#', 'a',
+        EStringChoiceList = ['e', 'f', 'f#', 'g', 'g#', 'a','a#',
                              'b', 'c', 'c#', 'd', 'd#', 'x']
         self.EStringLabel = wx.StaticText(self, -1, "E: ")
         self.EStringNotesChoice = wx.Choice(self, -1, size=(70, -1),
@@ -94,7 +94,7 @@ class MainPanel(wx.Panel):
         self.EStringFretsChoice.Hide()
 
         #A String
-        AStringChoiceList = ['a', 'b', 'c', 'c#', 'd', 'd#',
+        AStringChoiceList = ['a', 'a#', 'b', 'c', 'c#', 'd', 'd#',
                              'e', 'f', 'f#', 'g', 'g#', 'x']
         self.AStringLabel = wx.StaticText(self, -1, "A: ")
         self.AStringNotesChoice = wx.Choice(self, -1, size=(70, -1),
@@ -111,7 +111,7 @@ class MainPanel(wx.Panel):
 
         #D String
         DStringChoiceList = ['d', 'd#', 'e', 'f', 'f#', 'g',
-                             'g#', 'a', 'b', 'c', 'c#', 'x']
+                             'g#', 'a', 'a#', 'b', 'c', 'c#', 'x']
         self.DStringLabel = wx.StaticText(self, -1, "D: ")
         self.DStringNotesChoice = wx.Choice(self, -1, size=(70, -1),
                                             choices=DStringChoiceList)
@@ -126,7 +126,7 @@ class MainPanel(wx.Panel):
         self.DStringFretsChoice.Hide()
 
         #G String
-        GStringChoiceList = ['g', 'g#', 'a', 'b', 'c', 'c#',
+        GStringChoiceList = ['g', 'g#', 'a', 'a#', 'b', 'c', 'c#',
                              'd', 'd#', 'e', 'f', 'f#', 'x']
         self.GStringLabel = wx.StaticText(self, -1, "G: ")
         self.GStringNotesChoice = wx.Choice(self, -1, size=(70, -1),
@@ -143,7 +143,7 @@ class MainPanel(wx.Panel):
 
         #B String
         BStringChoiceList = ['b', 'c', 'c#', 'd', 'd#', 'e',
-                             'f', 'f#', 'g', 'g#', 'a', 'x']
+                             'f', 'f#', 'g', 'g#', 'a', 'a#', 'x']
         self.BStringLabel = wx.StaticText(self, -1, "B: ")
         self.BStringNotesChoice = wx.Choice(self, -1, size=(70, -1),
                                             choices=BStringChoiceList)
@@ -181,7 +181,24 @@ class MainPanel(wx.Panel):
         self.sizer.Add(self.submitButton, 0,
                        wx.ALIGN_CENTER | wx.TOP | wx.LEFT | wx.BOTTOM, 10)
 
+        #ADD YOURCHORDIS TEXT
+        yourChordIsString = 'Your chord is:\n'
+        self.yourChordIsText = wx.StaticText(self, -1, yourChordIsString, size=(-1, -1))
+        font = wx.Font(18, wx.SWISS, wx.NORMAL, wx.NORMAL)
+        self.yourChordIsText.SetFont(font)
+        self.sizer.Add(self.yourChordIsText, 0, wx.ALIGN_CENTER)
+
+        #ADD ACTUAL CHORD TEXT
+        chordString = ''
+        self.chordText = wx.StaticText(self, -1, chordString, size=(-1,-1))
+        font = wx.Font(18, wx.SWISS, wx.NORMAL, wx.NORMAL)
+        self.chordText.SetFont(font)        
+        self.sizer.Add(self.chordText, 0, wx.ALIGN_CENTER)
+
         self.SetSizer(self.sizer)
+        
+        self.yourChordIsText.Hide()
+        self.chordText.Hide()
 
     def onFrets(self, event):
         #HIDE NOTE CHOICES AND REVEAL FRET CHOICES
@@ -275,21 +292,27 @@ class MainPanel(wx.Panel):
             chordList = triadCalculator(noteList, alternateNoteList)
         elif len(noteList) == 4:
             chordList = seventhCalculator(noteList, alternateNoteList)
+        else:
+            self.chordText.SetLabel('Chord not found!')
+            self.yourChordIsText.Show()
+            self.chordText.Show()
+            self.sizer.Layout()
+            return
 
         chordString = chordList[0]
         chordBass = chordList[1]
         chordType = chordList[2]
-        print chordString
-        print chordBass
-        print chordType
 
         # PRINT RESULTS
         if bassNote == chordBass:
-            print('\nYour chord is {0}!'.format(chordType))
+            self.chordText.SetLabel('{0}!'.format(chordType))
         else:
-            print('\nYour chord is {0} with {1} in the bass.'.format(
-                chordType, bassNote.upper()))
-                
+            self.chordText.SetLabel('{0} with {1} in the bass.'.format(
+                                     chordType, bassNote.upper()))
+
+        self.yourChordIsText.Show()
+        self.chordText.Show()
+        self.sizer.Layout()
 
 if __name__ == '__main__':
     app = wx.App(False)
